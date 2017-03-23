@@ -1,4 +1,4 @@
-function yfit = kernridgereg( XTRAIN, ytrain, XTEST, lambda, p, c )
+function yfit = kernridgereg( XTRAIN, ytrain, XTEST, kern, lambda )
 %FUN Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -7,13 +7,11 @@ function yfit = kernridgereg( XTRAIN, ytrain, XTEST, lambda, p, c )
 
 yfit = zeros(m,1);
 
-pol = @( x1, x2 )( (x1 * x2' + c )^p );
-
 K = zeros(n,n);
 
 for i = 1:n
     for j = 1:n
-        K(i,j) = pol(XTRAIN(i,:), XTRAIN(j,:));
+        K(i,j) = kern(XTRAIN(i,:), XTRAIN(j,:));
     end
 end
     
@@ -21,7 +19,7 @@ for l = 1:m
     k = zeros(n,1);
     
     for  i = 1:n
-        k(i) = pol(XTRAIN(i,:), XTEST(l,:));
+        k(i) = kern(XTRAIN(i,:), XTEST(l,:));
     end
     
     yfit(l) = (ytrain' * ((K + lambda*eye(n))\k));
